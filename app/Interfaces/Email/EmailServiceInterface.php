@@ -5,5 +5,5 @@ use App\Models\User;
 
 interface EmailServiceInterface
 {
-    public function sendWelcomeEmail(User $user);
+    public function send(User $user);
 }
