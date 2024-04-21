@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 class EmailService implements EmailServiceInterface
 {
-    public function sendWelcomeEmail(User $user)
+    public function send(User $user)
     {
         Mail::to($user->email)->send(new WelcomeEmail($user));
     }
