@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::POST('payment', [PaymentController::class, 'payment']);
-Route::POST('register', [AuthController::class, 'register']); //register
-Route::POST('login', [AuthController::class, 'login']); //login
+// Route::POST('payment', [PaymentController::class, 'payment']);
+Route::POST('/register', [AuthController::class, 'register']); //register
+Route::POST('/login', [AuthController::class, 'login'])->name('login'); //login
+Route::POST('/verify-email', [AuthController::class, 'verifyEmail'])->name('verify_email');
+Route::GET('/logout', [AuthController::class, 'logout'])->middleware('auth:api');

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Repositories\User\UserRepository;
-use App\Services\User\CreateUserService;
+use App\Services\Auth\RegisterUserService;
+use App\Services\User\DeleteUserService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -23,17 +26,40 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         $data['password'] = Hash::make($request->password);
-        $user = resolve(CreateUserService::class)->setParams($data)->handle();
+        $user = resolve(RegisterUserService::class)->setParams($data)->handle();
 
         if ($user) {
             return response()->json([
-                'message' => __('message.success_register'),
+                'message' => __('message.check_mail'),
             ], Response::HTTP_OK);
         }
 
         return response()->json([
             'message' => __('message.error_register')
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Verify email to register account
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function verifyEmail(Request $request)
+    {
+        $data['id'] = $request->userID;
+
+        if (!$request->hasValidSignature()) {
+            resolve(DeleteUserService::class)->setParams($data)->handle();
+
+            return response()->json([
+                'message' => __('message.invalid_link')
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json([
+            'message' => __('message.success_register'),
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -45,23 +71,44 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
-
-        if (Auth::attempt(
+        if ($token = Auth::attempt(
             [
                 'email' => $data['email'],
                 'password' => $data['password'],
             ]
         )) {
-            $user = resolve(UserRepository::class)->findByEmail($data['email']);
-
             return response()->json([
                 'message' => __('message.success_login'),
-                'success' => $user,
+                'user' => Auth::user(),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
             ], Response::HTTP_OK);
         }
 
         return response()->json([
             'message' => __('message.error_login'),
         ], Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Logout account.
+     *
+     * @param 
+     * @return Response
+     */
+    public function logout()
+    {
+        try {
+            Auth::logout();
+
+            return response()->json(['message' => __('message.success_logout')]);
+        } catch (\Exception $e) {
+            Log::error("logout fail", ['result' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => __('message.error_logout')
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
