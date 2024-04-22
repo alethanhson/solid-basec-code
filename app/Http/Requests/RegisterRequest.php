@@ -10,8 +10,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&"*()\-_=+{};:,<.>]).{6,255}+$/',
+            'email' => 'required|email:rfc,dns|unique:users,email',
+            'password' => 'required|confirmed|min:6|max:20|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&"*()\-_=+{};:,<.>]).{6,255}+$/',
         ];
     }
 
@@ -20,8 +20,9 @@ class RegisterRequest extends FormRequest
         return [
             'required' => ':attribute không được để trống',
             'max' => ':attribute có nhiều nhất :max ký tự',
-            'email' => ':attribute Phải là dạng email',
+            'email' => ':attribute không đúng định dạng',
             'min' => ':attribute có ít nhất :min ký tự',
+            'max' => ':attribute có nhiều nhất nhất :min ký tự',
             'confirmed' => 'nhập lại :attribute không đúng',
             'regex' => ':attribute phải chứa ký tự In Hoa và ký tự đặc biệt',
             'unique' => 'email đã tồn tại',
