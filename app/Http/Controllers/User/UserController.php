@@ -21,7 +21,7 @@ class UserController extends Controller
     /**
      * Get all users.
      *
-     * @param RegisterRequest $request
+     * @param Request $request
      * @return Response
      */
     public function index(Request $request)
@@ -83,7 +83,7 @@ class UserController extends Controller
      * @param int $userId
      * @return Response
      */
-    public function delete(int $userId)
+    public function destroy(int $userId)
     {
         $user = resolve(DeleteUserService::class)->setParams($userId)->handle();
 
