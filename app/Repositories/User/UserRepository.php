@@ -26,7 +26,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $query = $this->model->select('*');
 
         if ($keyWord) {
-            $query->where('name', 'LIKE', "%{$keyWord}%");
+            $query->where('name', 'LIKE', "%{$keyWord}%")
+                ->orWhere('email', 'LIKE', "%{$keyWord}%");
         }
 
         return $query
