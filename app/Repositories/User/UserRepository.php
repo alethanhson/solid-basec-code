@@ -17,4 +17,20 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->model->where('email', $email)->first();
     }
+
+    public function getListUserFilter($data)
+    {
+        $perPage = $data['per_page'];
+        $keyWord = $data['key_word'];
+
+        $query = $this->model->select('*');
+
+        if ($keyWord) {
+            $query->where('name', 'LIKE', "%{$keyWord}%");
+        }
+
+        return $query
+            ->orderBy('created_at', 'DESC')
+            ->paginate($perPage);
+    }
 }

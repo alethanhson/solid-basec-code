@@ -3,35 +3,90 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Services\User\CreateUserService;
 use App\Services\User\DeleteUserService;
 use App\Services\User\GetUserService;
+use App\Services\User\ShowUserService;
 use App\Services\User\UpdateUserService;
 use Illuminate\Http\Request;
+use App\Traits\APIResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function store(Request $request)
-    {
-        $user = resolve(CreateUserService::class)->setParams($request)->handle();
-        return redirect()->route('users.index');
-    }
+    use APIResponse;
 
-    public function delete(int $id, Request $request)
-    {
-        $user = resolve(DeleteUserService::class)->handle();
-        return redirect()->route('users.index');
-    }
-
+    /**
+     * Get all users.
+     *
+     * @param RegisterRequest $request
+     * @return Response
+     */
     public function index(Request $request)
     {
-        $user = resolve(GetUserService::class)->handle();
-        return redirect()->route('users.index');
+        $users = resolve(GetUserService::class)->setParams($request)->handle();
+
+        return $this->responseSuccessWithData($users);
     }
 
-    public function update(Request $request)
+    /**
+     * Create user.
+     *
+     * @param CreateUserRequest $request
+     * @return Response
+     */
+    public function store(CreateUserRequest $request)
     {
-        $user = resolve(UpdateUserService::class)->setParams($request)->handle();
-        return redirect()->route('users.index');
+        $data = $request->validated();
+        $data['password'] = Hash::make($request->password);
+
+        $user = resolve(CreateUserService::class)->setParams($data)->handle();
+
+        return $user ? $this->responseSuccess() : $this->responseError();
+    }
+
+    /**
+     * Show user by ID.
+     *
+     * @param int $userId
+     * @return Response
+     */
+    public function show(int $userId)
+    {
+        $user = resolve(ShowUserService::class)->setParams($userId)->handle();
+
+        return $this->responseSuccessWithData($user);
+    }
+
+    /**
+     * Update user's information.
+     *
+     * @param UpdateUserRequest $request
+     * @param int $userId
+     * @return Response
+     */
+    public function update(UpdateUserRequest $request, int $userId)
+    {
+        $data['information'] = $request->validated();
+        $data['id'] = $userId;
+
+        $user = resolve(UpdateUserService::class)->setParams($data)->handle();
+
+        return $user ? $this->responseSuccess() : $this->responseError();
+    }
+
+    /**
+     * Delete user by ID.
+     *
+     * @param int $userId
+     * @return Response
+     */
+    public function delete(int $userId)
+    {
+        $user = resolve(DeleteUserService::class)->setParams($userId)->handle();
+
+        return $user ? $this->responseSuccess() : $this->responseError();
     }
 }
