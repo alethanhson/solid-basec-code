@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Repositories\User\UserRepository;
 use App\Services\Auth\RegisterUserService;
+use App\Services\Auth\SetVerifiedEmailService;
 use App\Services\User\DeleteUserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -47,6 +49,7 @@ class AuthController extends Controller
      */
     public function verifyEmail(Request $request)
     {
+        $data = $request;
         $data['id'] = $request->userID;
 
         if (!$request->hasValidSignature()) {
@@ -56,6 +59,8 @@ class AuthController extends Controller
                 'message' => __('message.invalid_link')
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        resolve(SetVerifiedEmailService::class)->setParams($data)->handle();
 
         return response()->json([
             'message' => __('message.success_register'),
