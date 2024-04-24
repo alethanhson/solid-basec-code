@@ -28,3 +28,4 @@ Route::POST('/verify-email', [AuthController::class, 'verifyEmail'])->name('veri
 Route::GET('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
 Route::apiResource('users', UserController::class);
+
