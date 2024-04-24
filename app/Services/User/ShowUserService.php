@@ -7,7 +7,7 @@ use App\Services\BaseService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class GetUserService extends BaseService
+class ShowUserService extends BaseService
 {
     protected $userRepository;
 
@@ -19,20 +19,7 @@ class GetUserService extends BaseService
     public function handle()
     {
         try {
-            $perPage = $this->data->per_page ?? 5;
-
-            if (!is_numeric($perPage) || $perPage <= 0) {
-                $perPage = 5;
-            }
-
-            $keyWord = htmlspecialchars($this->data->key_word) ?? null;
-
-            $data = [
-                'key_word' => $keyWord,
-                'per_page' => $perPage,
-            ];
-
-            return $this->userRepository->getListUserFilter($data);
+            return $this->userRepository->find($this->data);
         } catch (Exception $e) {
             Log::info($e);
 
