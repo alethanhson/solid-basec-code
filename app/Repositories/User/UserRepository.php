@@ -18,6 +18,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->where('email', $email)->first();
     }
 
+    /**
+     * Get users, filter with fields.
+     *
+     * @param $data
+     * @return App\Models\User|null
+     */
     public function getListUserFilter($data)
     {
         $perPage = $data['per_page'];
