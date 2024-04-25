@@ -19,8 +19,20 @@ class GetUserService extends BaseService
     public function handle()
     {
         try {
-            $this->userRepository->all();
-            return true;
+            $perPage = $this->data->per_page ?? 5;
+
+            if (!is_numeric($perPage) || $perPage <= 0) {
+                $perPage = 5;
+            }
+
+            $keyWord = htmlspecialchars($this->data->key_word) ?? null;
+
+            $data = [
+                'key_word' => $keyWord,
+                'per_page' => $perPage,
+            ];
+
+            return $this->userRepository->getListUserFilter($data);
         } catch (Exception $e) {
             Log::info($e);
 

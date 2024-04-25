@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Auth;
 
 use App\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class UpdateUserService extends BaseService
+
+class SetVerifiedEmailService extends BaseService
 {
     protected $userRepository;
 
@@ -19,7 +21,12 @@ class UpdateUserService extends BaseService
     public function handle()
     {
         try {
-            return $this->userRepository->update($this->data['information'], $this->data['id']);
+            $user = $this->userRepository->find($this->data->id);
+            $user->update([
+                'email_verified_at' => Carbon::now()
+            ]);
+
+            return true;
         } catch (Exception $e) {
             Log::info($e);
 
