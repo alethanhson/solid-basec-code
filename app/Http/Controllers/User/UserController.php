@@ -11,13 +11,10 @@ use App\Services\User\GetUserService;
 use App\Services\User\ShowUserService;
 use App\Services\User\UpdateUserService;
 use Illuminate\Http\Request;
-use App\Traits\APIResponse;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    use APIResponse;
-
     /**
      * Get all users.
      *
@@ -28,7 +25,10 @@ class UserController extends Controller
     {
         $users = resolve(GetUserService::class)->setParams($request)->handle();
 
-        return $this->responseSuccessWithData($users);
+        return $this->responseSuccess([
+            'message' => __('message.success'),
+            'users' => $users,
+        ]);
     }
 
     /**
@@ -44,7 +44,14 @@ class UserController extends Controller
 
         $user = resolve(CreateUserService::class)->setParams($data)->handle();
 
-        return $user ? $this->responseSuccess() : $this->responseError();
+        if ($user) {
+            return $this->responseSuccess([
+                'message' => __('messsage.success'),
+                'user' => $user,
+            ]);
+        }
+
+        return $this->responseErrors(__('messsage.error'));
     }
 
     /**
@@ -57,7 +64,10 @@ class UserController extends Controller
     {
         $user = resolve(ShowUserService::class)->setParams($userId)->handle();
 
-        return $this->responseSuccessWithData($user);
+        return $this->responseSuccess([
+            'message' => __('messsage.success'),
+            'users' => $user
+        ]);
     }
 
     /**
@@ -74,7 +84,14 @@ class UserController extends Controller
 
         $user = resolve(UpdateUserService::class)->setParams($data)->handle();
 
-        return $user ? $this->responseSuccess() : $this->responseError();
+        if ($user) {
+            return $this->responseSuccess([
+                'message' => __('messsage.success'),
+                'users' => $user
+            ]);
+        }
+
+        return $this->responseErrors(__('messsage.error'));
     }
 
     /**
@@ -87,6 +104,12 @@ class UserController extends Controller
     {
         $user = resolve(DeleteUserService::class)->setParams($userId)->handle();
 
-        return $user ? $this->responseSuccess() : $this->responseError();
+        if ($user) {
+            return $this->responseSuccess([
+                'message' => __('messsage.success'),
+            ]);
+        }
+
+        return $this->responseErrors(__('messsage.error'));
     }
 }

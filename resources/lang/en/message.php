@@ -13,6 +13,7 @@ return [
     'invalid_email_address_not_found' => 'Invalid email address not found.',
     'this_account_is_invalid' => 'This account is Invalid.',
     'success' => 'Success.',
+    'error' => 'Error.',
     'not_found' => 'Not found.',
     'invalid_parameters' => 'Invalid parameters.',
 ];
