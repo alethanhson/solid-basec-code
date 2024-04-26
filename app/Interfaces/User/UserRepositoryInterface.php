@@ -8,5 +8,5 @@ interface UserRepositoryInterface extends CrudRepositoryInterface
 {
     public function findByEmail($email);
 
-    public function getListUserFilter($data);
+    public function getListUserFilter($data); 
 }

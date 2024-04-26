@@ -26,7 +26,7 @@ class UserController extends Controller
         $users = resolve(GetUserService::class)->setParams($request)->handle();
 
         return $this->responseSuccess([
-            'message' => __('message.success'),
+            'message' => __('messages.success'),
             'users' => $users,
         ]);
     }
@@ -46,12 +46,12 @@ class UserController extends Controller
 
         if ($user) {
             return $this->responseSuccess([
-                'message' => __('messsage.success'),
+                'message' => __('messages.success'),
                 'user' => $user,
             ]);
         }
 
-        return $this->responseErrors(__('messsage.error'));
+        return $this->responseErrors(__('messages.error'));
     }
 
     /**
@@ -65,7 +65,7 @@ class UserController extends Controller
         $user = resolve(ShowUserService::class)->setParams($userId)->handle();
 
         return $this->responseSuccess([
-            'message' => __('messsage.success'),
+            'message' => __('messages.success'),
             'users' => $user
         ]);
     }
@@ -86,12 +86,12 @@ class UserController extends Controller
 
         if ($user) {
             return $this->responseSuccess([
-                'message' => __('messsage.success'),
+                'message' => __('messages.success'),
                 'users' => $user
             ]);
         }
 
-        return $this->responseErrors(__('messsage.error'));
+        return $this->responseErrors(__('messages.error'));
     }
 
     /**
@@ -106,10 +106,10 @@ class UserController extends Controller
 
         if ($user) {
             return $this->responseSuccess([
-                'message' => __('messsage.success'),
+                'message' => __('messages.success'),
             ]);
         }
 
-        return $this->responseErrors(__('messsage.error'));
+        return $this->responseErrors(__('messages.error'));
     }
 }

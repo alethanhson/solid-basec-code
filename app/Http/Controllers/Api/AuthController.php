@@ -32,12 +32,12 @@ class AuthController extends Controller
 
         if ($user) {
             return response()->json([
-                'message' => __('message.check_mail'),
+                'message' => __('messages.check_mail'),
             ], Response::HTTP_OK);
         }
 
         return response()->json([
-            'message' => __('message.error_register')
+            'message' => __('messages.error_register')
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
@@ -56,14 +56,14 @@ class AuthController extends Controller
             resolve(DeleteUserService::class)->setParams($data)->handle();
 
             return response()->json([
-                'message' => __('message.invalid_link')
+                'message' => __('messages.invalid_link')
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         resolve(SetVerifiedEmailService::class)->setParams($data)->handle();
 
         return response()->json([
-            'message' => __('message.success_register'),
+            'message' => __('messages.success_register'),
         ], Response::HTTP_OK);
     }
 
@@ -83,7 +83,7 @@ class AuthController extends Controller
             ]
         )) {
             return response()->json([
-                'message' => __('message.success_login'),
+                'message' => __('messages.success_login'),
                 'user' => Auth::user(),
                 'access_token' => $token,
                 'token_type' => 'bearer',
@@ -92,7 +92,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => __('message.error_login'),
+            'message' => __('messages.error_login'),
         ], Response::HTTP_UNAUTHORIZED);
     }
 
@@ -107,12 +107,12 @@ class AuthController extends Controller
         try {
             Auth::logout();
 
-            return response()->json(['message' => __('message.success_logout')]);
+            return response()->json(['message' => __('messages.success_logout')]);
         } catch (\Exception $e) {
             Log::error("logout fail", ['result' => $e->getMessage()]);
 
             return response()->json([
-                'message' => __('message.error_logout')
+                'message' => __('messages.error_logout')
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
