@@ -41,4 +41,16 @@ abstract class BaseRepository implements CrudRepositoryInterface
     {
         return $this->model->findOrFail($id)->delete();
     }
+
+    /**
+     * Find data by field and value.
+     *
+     * @param $field
+     * @param null $value
+     * @return mixed
+     */
+    public function findFirstByField($field, $value = null): mixed
+    {
+        return $this->model->where($field, '=', $value)->first();
+    }
 }
